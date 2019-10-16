@@ -4,12 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"strconv"
 
 	"github.com/manifoldco/promptui"
 )
 
-func askForConfigurationSetting(label string) string {
+func askForSettingAsString(label string) string {
 	prompt := promptui.Prompt{
 		Label: fmt.Sprintf("Type the %s", label),
 	}
@@ -18,21 +17,39 @@ func askForConfigurationSetting(label string) string {
 	return value
 }
 
+func askForAnItem(label string, items []string) string {
+	prompt := promptui.Select{
+		Label: label,
+		Items: items,
+	}
+	_, value, _ := prompt.Run()
+	return value
+}
+
 func askForConfigurationAndSave() {
 	configuration = Configuration{}
 
-	configuration.Organization = askForConfigurationSetting("organization name")
-	configuration.Project = askForConfigurationSetting("project name")
-	configuration.ApiVersion = askForConfigurationSetting("API version to use (default 5.1)")
+	configuration.Username = askForSettingAsString("username")
+	configuration.Password = askForSettingAsString("password")
+	configuration.Organization = askForSettingAsString("organization name")
+	configuration.ApiVersion = askForSettingAsString("API version to use (default 5.1)")
 	if configuration.ApiVersion == "" {
 		configuration.ApiVersion = "5.1"
 	}
-	configuration.Username = askForConfigurationSetting("username")
-	configuration.Password = askForConfigurationSetting("password")
-	configuration.Definition, _ = strconv.Atoi(askForConfigurationSetting("definition ID"))
 
+	configuration.Project = askForAnItem("Select a project", getProjectNames())
+
+	buildDefinitionName := askForAnItem("Select a build definition", getProjectDefinitions(configuration.Project))
+	configuration.BuildDefinition = getDefinitionByName(buildDefinitionName, buildDefinitions).Id
+
+	releaseDefinitionName := askForAnItem("Select a release definition", getProjectReleaseDefinitions(configuration.Project))
+	configuration.ReleaseDefinition = getDefinitionByName(releaseDefinitionName, releaseDefinitions).Id
+
+	writeConfigFile(configuration)
+}
+
+func writeConfigFile(configuration Configuration) {
 	file, _ := json.MarshalIndent(configuration, "", " ")
-
 	_ = ioutil.WriteFile("devops.config.json", file, 0644)
 }
 

@@ -15,6 +15,11 @@ type BuildsResponse struct {
 	Value []Build
 }
 
+type ReleasesResponse struct {
+	Count int
+	Value []Release
+}
+
 type GeneralStruct struct {
 	Id   int
 	Name string
@@ -40,16 +45,23 @@ type Build struct {
 	SourceBranch string
 }
 
+type Release struct {
+	Id        int
+	Name      string
+	CreatedOn string
+}
+
 type ConfigurationProject struct {
 	Name       string
 	Definition int
 }
 
 type Configuration struct {
-	Project      string
-	ApiVersion   string
-	Username     string
-	Password     string
-	Definition   int
-	Organization string
+	Project           string
+	ApiVersion        string
+	Username          string
+	Password          string
+	BuildDefinition   int
+	ReleaseDefinition int
+	Organization      string
 }
