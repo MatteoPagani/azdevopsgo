@@ -61,7 +61,7 @@ func commands() {
 			Usage:   "Get latest deployments of current project definition",
 			Action: func(c *cli.Context) {
 				if configurationIsValid() {
-					getLatestDeployments()
+					printDeployments(getLatestDeployments())
 				}
 			},
 		},
@@ -71,7 +71,7 @@ func commands() {
 			Usage:   "Get latest builds of current project definition",
 			Action: func(c *cli.Context) {
 				if configurationIsValid() {
-					getLatestBuilds()
+					printBuilds(getLatestBuilds())
 				}
 			},
 		},

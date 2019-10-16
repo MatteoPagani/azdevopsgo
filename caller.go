@@ -6,9 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-
-	"github.com/jedib0t/go-pretty/table"
 )
 
 func callVsrm(endpoint string) string {
@@ -97,7 +94,7 @@ func getProjectDefinitions(project string) []string {
 	return definitionsNames
 }
 
-func getLatestDeployments() {
+func getLatestDeployments() []Deployment {
 	fmt.Println()
 	fmt.Println(fmt.Sprintf("Getting deployments of project %s and definition %d", configuration.Project, configuration.ReleaseDefinition))
 	fmt.Println()
@@ -108,35 +105,10 @@ func getLatestDeployments() {
 	var response ReleasesResponse
 	json.Unmarshal([]byte(result), &response)
 
-	t := table.NewWriter()
-	t.SetOutputMirror(os.Stdout)
-	t.AppendHeader(table.Row{
-		"#",
-		"StartedOn",
-		"CompletedOn",
-		"Environment",
-		"Status",
-	})
-
-	i := 0
-	for _, element := range response.Value {
-		t.AppendRow([]interface{}{
-			element.Id,
-			element.StartedOn,
-			element.CompletedOn,
-			element.ReleaseEnvironment.Name,
-			element.DeploymentStatus,
-		})
-		i = i + 1
-		if i > 10 {
-			break
-		}
-	}
-
-	t.Render()
+	return response.Value
 }
 
-func getLatestBuilds() {
+func getLatestBuilds() []Build {
 
 	fmt.Println()
 	fmt.Println(fmt.Sprintf("Getting builds of project %s and definition %d", configuration.Project, configuration.BuildDefinition))
@@ -148,18 +120,5 @@ func getLatestBuilds() {
 	var response BuildsResponse
 	json.Unmarshal([]byte(result), &response)
 
-	t := table.NewWriter()
-	t.SetOutputMirror(os.Stdout)
-	t.AppendHeader(table.Row{"#", "Started", "Finished", "Branch"})
-
-	i := 0
-	for _, element := range response.Value {
-		t.AppendRow([]interface{}{element.Id, element.StartTime, element.FinishTime, element.SourceBranch})
-		i = i + 1
-		if i > 10 {
-			break
-		}
-	}
-
-	t.Render()
+	return response.Value
 }
