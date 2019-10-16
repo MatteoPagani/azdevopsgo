@@ -45,9 +45,17 @@ func commands() {
 			},
 		},
 		{
+			Name:    "releases",
+			Aliases: []string{"r"},
+			Usage:   "Get latests releases of current project definition",
+			Action: func(c *cli.Context) {
+				getLatestReleases()
+			},
+		},
+		{
 			Name:    "builds",
 			Aliases: []string{"b"},
-			Usage:   "Get builds of current project definition",
+			Usage:   "Get latests builds of current project definition",
 			Action: func(c *cli.Context) {
 				readConfigurationFile() // Reads the config.json file and store into configuration var
 
@@ -56,7 +64,7 @@ func commands() {
 					return
 				}
 
-				getBuildsOfDefinition() // Print in CLI the last N builds of the definition
+				getLatestBuilds() // Print in CLI the last N builds of the definition
 			},
 		},
 	}

@@ -61,7 +61,18 @@ func getProjectDefinitions(project string) []string {
 	return definitionsNames
 }
 
-func getBuildsOfDefinition() {
+func getLatestReleases() {
+	fmt.Println()
+	fmt.Println(fmt.Sprintf("Getting releases of project %s and definition %d", configuration.Project, configuration.Definition))
+	fmt.Println()
+
+	endpoint := fmt.Sprintf("%s/_apis/release/releases?definitions=%d&api-version=%s", configuration.Project, configuration.Definition, configuration.ApiVersion)
+	result := call(endpoint)
+
+	fmt.Println(result)
+}
+
+func getLatestBuilds() {
 
 	fmt.Println()
 	fmt.Println(fmt.Sprintf("Getting builds of project %s and definition %d", configuration.Project, configuration.Definition))
