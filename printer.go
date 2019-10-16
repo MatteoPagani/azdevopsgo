@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -27,8 +26,6 @@ func printDeployments(deployments []Deployment) {
 
 		buildId := element.Release.Artifacts[0].DefinitionReference.Version.Id
 		changes := getBuildChangesById(buildId)
-
-		fmt.Println(element.CompletedOn)
 
 		parsedTime, _ := time.Parse("2006-01-02T15:04:05Z", element.CompletedOn)
 
