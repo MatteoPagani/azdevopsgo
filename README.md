@@ -1,6 +1,6 @@
 ## Description
 
-A lightweight CLI command written in GoLang to interact with most useful Azure Devops resources, such as builds, deployments and work items.
+A lightweight CLI command written in GoLang to interact with most of the useful Azure Devops resources, such as builds, deployments and work items.
 
 ## How to
 
