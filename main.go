@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/manifoldco/promptui"
 	"github.com/urfave/cli"
@@ -17,10 +18,18 @@ var app = cli.NewApp()
 
 var configuration Configuration
 
+var desiredLocationForDateTime *time.Location
+
+const (
+	AzureTimeLayout   = "2006-01-02T15:04:05Z"
+	DesiredTimeLayout = "02/01/2006 15:04"
+)
+
 func main() {
 
-	info()
-	commands()
+	desiredLocationForDateTime, _ = time.LoadLocation("Europe/Rome")
+
+	initApp()
 
 	err := app.Run(os.Args)
 	if err != nil {
@@ -29,14 +38,12 @@ func main() {
 
 }
 
-func info() {
+func initApp() {
 	app.Name = "devops"
 	app.Usage = "Get Azure DevOps last builds"
 	app.Author = "Matteo Pagani"
 	app.Version = "1.0.0"
-}
 
-func commands() {
 	app.Commands = []cli.Command{
 		{
 			Name:    "setup",

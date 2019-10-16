@@ -7,6 +7,7 @@ import (
 	"github.com/jedib0t/go-pretty/table"
 )
 
+// Print a table of latest 10 deployments
 func printDeployments(deployments []Deployment) {
 
 	t := table.NewWriter()
@@ -19,23 +20,22 @@ func printDeployments(deployments []Deployment) {
 		"Changes",
 	})
 
-	loc, _ := time.LoadLocation("Europe/Rome")
-
 	i := 0
 	for _, element := range deployments {
 
 		buildId := element.Release.Artifacts[0].DefinitionReference.Version.Id
 		changes := getBuildChangesById(buildId)
 
-		parsedTime, _ := time.Parse("2006-01-02T15:04:05Z", element.CompletedOn)
+		parsedTime, _ := time.Parse(AzureTimeLayout, element.CompletedOn)
 
 		t.AppendRow([]interface{}{
 			element.Id,
-			parsedTime.In(loc).Format("02/01/2006 15:04"),
+			parsedTime.In(desiredLocationForDateTime).Format(DesiredTimeLayout),
 			element.ReleaseEnvironment.Name,
 			element.DeploymentStatus,
 			changes[0].Message,
 		})
+
 		i = i + 1
 		if i > 10 {
 			break
@@ -45,6 +45,7 @@ func printDeployments(deployments []Deployment) {
 	t.Render()
 }
 
+// Print a table of latest 10 builds
 func printBuilds(builds []Build) {
 
 	t := table.NewWriter()

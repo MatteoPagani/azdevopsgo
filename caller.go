@@ -8,16 +8,19 @@ import (
 	"net/http"
 )
 
+// Call Azure DevOps REST API with VSRM endpoint prefix
 func callVsrm(endpoint string) string {
 	endp := fmt.Sprintf("https://vsrm.dev.azure.com/%s/%s/%s", configuration.Organization, configuration.Project, endpoint)
 	return base(endp)
 }
 
+// Call Azure DevOps REST API
 func call(endpoint string) string {
 	endp := fmt.Sprintf("https://dev.azure.com/%s/%s", configuration.Organization, endpoint)
 	return base(endp)
 }
 
+// Base function to make REST API calls
 func base(endpoint string) string {
 	client := &http.Client{}
 
@@ -33,6 +36,7 @@ func base(endpoint string) string {
 	return s
 }
 
+// Get project names of organization
 func getProjectNames() []string {
 	projectsResult := call(fmt.Sprintf("_apis/projects?api-version=%s", configuration.ApiVersion))
 
@@ -48,6 +52,7 @@ func getProjectNames() []string {
 	return projectNames
 }
 
+// Get Definition struct by name
 func getDefinitionByName(name string, definitions []GeneralStruct) GeneralStruct {
 	for _, element := range definitions {
 		if element.Name == name {
@@ -58,6 +63,7 @@ func getDefinitionByName(name string, definitions []GeneralStruct) GeneralStruct
 	return GeneralStruct{}
 }
 
+// Get an array of BuildChange by build ID
 func getBuildChangesById(id string) []BuildChange {
 	endpoint := fmt.Sprintf("%s/_apis/build/builds/%s/changes?api-version=%s", configuration.Project, id, configuration.ApiVersion)
 	buildResult := call(endpoint)
@@ -68,6 +74,7 @@ func getBuildChangesById(id string) []BuildChange {
 	return res.Value
 }
 
+// Get release definitions of a project
 func getProjectReleaseDefinitions(project string) []string {
 	endpoint := fmt.Sprintf("_apis/release/definitions?api-version=%s", configuration.ApiVersion)
 	buildsResult := callVsrm(endpoint)
@@ -86,7 +93,8 @@ func getProjectReleaseDefinitions(project string) []string {
 	return definitionsNames
 }
 
-func getProjectDefinitions(project string) []string {
+// Get build definitions of a project
+func getBuildProjectDefinitions(project string) []string {
 	endpoint := fmt.Sprintf("%s/_apis/build/definitions?api-version=%s", project, configuration.ApiVersion)
 	buildsResult := call(endpoint)
 
