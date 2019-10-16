@@ -17,7 +17,7 @@ type BuildsResponse struct {
 
 type ReleasesResponse struct {
 	Count int
-	Value []Release
+	Value []Deployment
 }
 
 type GeneralStruct struct {
@@ -45,10 +45,23 @@ type Build struct {
 	SourceBranch string
 }
 
-type Release struct {
-	Id        int
-	Name      string
-	CreatedOn string
+type Deployment struct {
+	Id                 int
+	StartedOn          string
+	CompletedOn        string
+	DeploymentStatus   string
+	ReleaseEnvironment GeneralStruct
+}
+
+type DeploymentStatus struct {
+	Succeeded   string
+	Failed      string
+	NotDeployed string
+}
+
+type ReleaseDefinitionEnvironment struct {
+	Id   int
+	Name string
 }
 
 type ConfigurationProject struct {

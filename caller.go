@@ -102,7 +102,7 @@ func getLatestReleases() {
 	fmt.Println(fmt.Sprintf("Getting releases of project %s and definition %d", configuration.Project, configuration.ReleaseDefinition))
 	fmt.Println()
 
-	endpoint := fmt.Sprintf("_apis/release/releases?definitionId=%d&api-version=%s", configuration.ReleaseDefinition, configuration.ApiVersion)
+	endpoint := fmt.Sprintf("_apis/release/deployments?definitionId=%d&api-version=%s", configuration.ReleaseDefinition, configuration.ApiVersion)
 	result := callVsrm(endpoint)
 
 	var response ReleasesResponse
@@ -110,11 +110,11 @@ func getLatestReleases() {
 
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
-	t.AppendHeader(table.Row{"#", "Name", "CreatedOn"})
+	t.AppendHeader(table.Row{"#", "StartedOn", "CompletedOn", "Environment", "Status"})
 
 	i := 0
 	for _, element := range response.Value {
-		t.AppendRow([]interface{}{element.Id, element.Name, element.CreatedOn})
+		t.AppendRow([]interface{}{element.Id, element.StartedOn, element.CompletedOn, element.ReleaseEnvironment.Name, element.DeploymentStatus})
 		i = i + 1
 		if i > 10 {
 			break
