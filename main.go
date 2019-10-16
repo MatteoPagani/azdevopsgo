@@ -10,35 +10,47 @@ import (
 var definitions []GeneralStruct
 var projects []Project
 
-var configuration Configuration
+var app = cli.NewApp()
 
-var project string
-var definitionId int
+var configuration Configuration
 
 func main() {
 
-	app := cli.NewApp()
-	app.Name = "devops"
-	app.Usage = "Get Azure DevOps last builds"
-	app.Action = func(c *cli.Context) error {
-
-		initConfig()
-
-		if configuration.Project.Name == "" || configuration.Project.Definition == 0 {
-			askForProject()
-		} else {
-			project = configuration.Project.Name
-			definitionId = configuration.Project.Definition
-		}
-
-		getBuildsOfDefinition()
-
-		return nil
-	}
+	info()
+	commands()
 
 	err := app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+}
+
+func info() {
+	app.Name = "devops"
+	app.Usage = "Get Azure DevOps last builds"
+	app.Author = "Matteo Pagani"
+	app.Version = "1.0.0"
+}
+
+func commands() {
+	app.Commands = []cli.Command{
+		{
+			Name:    "setup",
+			Aliases: []string{"s"},
+			Usage:   "Setup your Azure Devops project with credentials and default pipeline",
+			Action: func(c *cli.Context) {
+				askForConfigurationAndSave() // Ask credentials and save them into config.json file
+			},
+		},
+		{
+			Name:    "builds",
+			Aliases: []string{"b"},
+			Usage:   "Get builds of current project definition",
+			Action: func(c *cli.Context) {
+				readConfigurationFile() // Reads the config.json file and store into configuration var
+				getBuildsOfDefinition() // Print in CLI the last N builds of the definition
+			},
+		},
+	}
 }

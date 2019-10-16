@@ -1,8 +1,8 @@
 package main
 
 type ProjectsResponse struct {
-	Value []Project `json:"value"`
-	Count int       `json:"count"`
+	Value []Project
+	Count int
 }
 
 type DefinitionsResponse struct {
@@ -21,14 +21,14 @@ type GeneralStruct struct {
 }
 
 type Project struct {
-	Id             string `json:"id"`
-	Name           string `json:"name"`
-	Description    string `json:"description"`
-	Url            string `json:"url"`
-	State          string `json:"state"`
-	Revision       int    `json:"revision"`
-	Visibility     string `json:"visibility"`
-	LastUpdateTime string `json:"lastUpdateTime"`
+	Id             string
+	Name           string
+	Description    string
+	Url            string
+	State          string
+	Revision       int
+	Visibility     string
+	LastUpdateTime string
 }
 
 type Build struct {
@@ -40,15 +40,16 @@ type Build struct {
 	SourceBranch string
 }
 
-type Configuration struct {
-	BaseUrl    string
-	ApiVersion string
-	Username   string
-	Password   string
-	Project    ConfigurationProject
+type ConfigurationProject struct {
+	Name       string
+	Definition int
 }
 
-type ConfigurationProject struct {
-	Name    string
-	Definition int
+type Configuration struct {
+	Project      string
+	ApiVersion   string
+	Username     string
+	Password     string
+	Definition   int
+	Organization string
 }

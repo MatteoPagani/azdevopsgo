@@ -12,11 +12,13 @@ import (
 )
 
 func call(endpoint string) string {
-	var username string = configuration.Username
-	var passwd string = configuration.Password
+
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s%s", configuration.BaseUrl, endpoint), nil)
-	req.SetBasicAuth(username, passwd)
+
+	endp := fmt.Sprintf("https://dev.azure.com/%s/%s", configuration.Organization, endpoint)
+	fmt.Println(endp)
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://dev.azure.com/%s/%s", configuration.Organization, endpoint), nil)
+	req.SetBasicAuth(configuration.Username, configuration.Password)
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal(err)
@@ -29,10 +31,9 @@ func call(endpoint string) string {
 
 func getProjectNames() []string {
 	projectsResult := call(fmt.Sprintf("_apis/projects?api-version=%s", configuration.ApiVersion))
+
 	var res ProjectsResponse
 	json.Unmarshal([]byte(projectsResult), &res)
-
-	projects = res.Value
 
 	var projectNames []string
 
@@ -52,7 +53,7 @@ func getProjectDefinitions(project string) []string {
 
 	var definitionsNames []string
 
-	definitions = definitionResponse.Value
+	definitions := definitionResponse.Value
 
 	for _, element := range definitions {
 		definitionsNames = append(definitionsNames, element.Name)
@@ -64,10 +65,10 @@ func getProjectDefinitions(project string) []string {
 func getBuildsOfDefinition() {
 
 	fmt.Println()
-	fmt.Println(fmt.Sprintf("Getting builds of project %s and definition %d", project, definitionId))
+	fmt.Println(fmt.Sprintf("Getting builds of project %s and definition %d", configuration.Project, configuration.Definition))
 	fmt.Println()
 
-	endpoint := fmt.Sprintf("%s/_apis/build/builds?definitions=%d&api-version=%s", project, definitionId, configuration.ApiVersion)
+	endpoint := fmt.Sprintf("%s/_apis/build/builds?definitions=%d&api-version=%s", configuration.Project, configuration.Definition, configuration.ApiVersion)
 	result := call(endpoint)
 
 	var response BuildsResponse

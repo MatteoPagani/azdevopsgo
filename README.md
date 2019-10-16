@@ -1,13 +1,11 @@
-## How to use
+## How to
 
-Simply run
+After running `go build`, executable file `devops` is made
 
-`mv config.sample.json config.json && go build && ./devops`
+1. Copy the executable to your PATH folder, for example: `cp devops /usr/local/bin`
+2. Move to your DevOps project folder
+3. `devops setup` will create a `config.json` file and then `devops builds` will print the last project builds
 
-## Configuration
+## TODO
 
-Please type your API information in the `config.json` file
-
-## Pre-configure
-
-If you want to show properties of pre-configured project, just add the `"Project"` property in config.json
+[x] Make go package installable thorugh brew or apt
