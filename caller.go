@@ -58,6 +58,16 @@ func getDefinitionByName(name string, definitions []GeneralStruct) GeneralStruct
 	return GeneralStruct{}
 }
 
+func getBuildChangesById(id string) []BuildChange {
+	endpoint := fmt.Sprintf("%s/_apis/build/builds/%s/changes?api-version=%s", configuration.Project, id, configuration.ApiVersion)
+	buildResult := call(endpoint)
+
+	var res BuildChangeResponse
+	json.Unmarshal([]byte(buildResult), &res)
+
+	return res.Value
+}
+
 func getProjectReleaseDefinitions(project string) []string {
 	endpoint := fmt.Sprintf("_apis/release/definitions?api-version=%s", configuration.ApiVersion)
 	buildsResult := callVsrm(endpoint)

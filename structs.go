@@ -20,6 +20,11 @@ type ReleasesResponse struct {
 	Value []Deployment
 }
 
+type BuildChangeResponse struct {
+	Count int
+	Value []BuildChange
+}
+
 type GeneralStruct struct {
 	Id   int
 	Name string
@@ -45,12 +50,43 @@ type Build struct {
 	SourceBranch string
 }
 
+type BuildChange struct {
+	DisplayUri       string
+	Id               string
+	Location         string
+	Message          string
+	MessageTruncated bool
+	Pusher           string
+	Timestamp        string
+	Type             string
+}
+
 type Deployment struct {
 	Id                 int
 	StartedOn          string
 	CompletedOn        string
 	DeploymentStatus   string
+	Release            Release
 	ReleaseEnvironment GeneralStruct
+}
+
+type Release struct {
+	Id        int
+	Name      string
+	Artifacts []Artifact
+}
+
+type Artifact struct {
+	DefinitionReference DefinitionReference
+}
+
+type DefinitionReference struct {
+	Version Version
+}
+
+type Version struct {
+	Id   string
+	Name string
 }
 
 type DeploymentStatus struct {
