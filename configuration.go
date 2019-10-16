@@ -4,9 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 
 	"github.com/manifoldco/promptui"
 )
+
+var configFileName = "devops.config.json"
 
 func askForSettingAsString(label string) string {
 	prompt := promptui.Prompt{
@@ -24,6 +27,17 @@ func askForAnItem(label string, items []string) string {
 	}
 	_, value, _ := prompt.Run()
 	return value
+}
+
+func configurationIsValid() bool {
+	readConfigurationFile() // Reads the config.json file and store into configuration var
+
+	if configuration.Project == "" {
+		fmt.Println("You must run setup command first")
+		return false
+	}
+
+	return true
 }
 
 func askForConfigurationAndSave() {
@@ -50,11 +64,11 @@ func askForConfigurationAndSave() {
 
 func writeConfigFile(configuration Configuration) {
 	file, _ := json.MarshalIndent(configuration, "", " ")
-	_ = ioutil.WriteFile("devops.config.json", file, 0644)
+	_ = ioutil.WriteFile(configFileName, file, 0644)
 }
 
 func readConfigurationFile() {
-	file, _ := ioutil.ReadFile("devops.config.json")
+	file, _ := ioutil.ReadFile(configFileName)
 
 	configuration = Configuration{}
 
@@ -64,4 +78,12 @@ func readConfigurationFile() {
 		fmt.Println("In order to get builds you must run the setup command first.")
 		return
 	}
+}
+
+func configurationFileExists() bool {
+	info, err := os.Stat(configFileName)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }

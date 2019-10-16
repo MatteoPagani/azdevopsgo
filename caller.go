@@ -97,9 +97,9 @@ func getProjectDefinitions(project string) []string {
 	return definitionsNames
 }
 
-func getLatestReleases() {
+func getLatestDeployments() {
 	fmt.Println()
-	fmt.Println(fmt.Sprintf("Getting releases of project %s and definition %d", configuration.Project, configuration.ReleaseDefinition))
+	fmt.Println(fmt.Sprintf("Getting deployments of project %s and definition %d", configuration.Project, configuration.ReleaseDefinition))
 	fmt.Println()
 
 	endpoint := fmt.Sprintf("_apis/release/deployments?definitionId=%d&api-version=%s", configuration.ReleaseDefinition, configuration.ApiVersion)
@@ -110,11 +110,23 @@ func getLatestReleases() {
 
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
-	t.AppendHeader(table.Row{"#", "StartedOn", "CompletedOn", "Environment", "Status"})
+	t.AppendHeader(table.Row{
+		"#",
+		"StartedOn",
+		"CompletedOn",
+		"Environment",
+		"Status",
+	})
 
 	i := 0
 	for _, element := range response.Value {
-		t.AppendRow([]interface{}{element.Id, element.StartedOn, element.CompletedOn, element.ReleaseEnvironment.Name, element.DeploymentStatus})
+		t.AppendRow([]interface{}{
+			element.Id,
+			element.StartedOn,
+			element.CompletedOn,
+			element.ReleaseEnvironment.Name,
+			element.DeploymentStatus,
+		})
 		i = i + 1
 		if i > 10 {
 			break

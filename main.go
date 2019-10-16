@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
+	"github.com/manifoldco/promptui"
 	"github.com/urfave/cli"
 )
 
@@ -43,37 +43,36 @@ func commands() {
 			Aliases: []string{"s"},
 			Usage:   "Setup your Azure Devops project with credentials and default pipeline",
 			Action: func(c *cli.Context) {
-				askForConfigurationAndSave() // Ask credentials and save them into config.json file
+				if configurationFileExists() {
+					prompt := promptui.Select{
+						Label: "Seems like a config file already exists. Do you want to overwrite it?",
+						Items: []string{"Yes", "No"},
+					}
+					_, value, _ := prompt.Run()
+					if value == "Yes" {
+						askForConfigurationAndSave() // Ask credentials and save them into config.json file
+					}
+				}
 			},
 		},
 		{
-			Name:    "releases",
-			Aliases: []string{"r"},
-			Usage:   "Get latests releases of current project definition",
+			Name:    "deployments",
+			Aliases: []string{"d"},
+			Usage:   "Get latest deployments of current project definition",
 			Action: func(c *cli.Context) {
-				readConfigurationFile() // Reads the config.json file and store into configuration var
-
-				if configuration.Project == "" {
-					fmt.Println("You must run setup command first")
-					return
+				if configurationIsValid() {
+					getLatestDeployments()
 				}
-
-				getLatestReleases()
 			},
 		},
 		{
 			Name:    "builds",
 			Aliases: []string{"b"},
-			Usage:   "Get latests builds of current project definition",
+			Usage:   "Get latest builds of current project definition",
 			Action: func(c *cli.Context) {
-				readConfigurationFile() // Reads the config.json file and store into configuration var
-
-				if configuration.Project == "" {
-					fmt.Println("You must run setup command first")
-					return
+				if configurationIsValid() {
+					getLatestBuilds()
 				}
-
-				getLatestBuilds() // Print in CLI the last N builds of the definition
 			},
 		},
 	}
