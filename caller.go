@@ -16,8 +16,7 @@ func call(endpoint string) string {
 	client := &http.Client{}
 
 	endp := fmt.Sprintf("https://dev.azure.com/%s/%s", configuration.Organization, endpoint)
-	fmt.Println(endp)
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://dev.azure.com/%s/%s", configuration.Organization, endpoint), nil)
+	req, err := http.NewRequest("GET", endp, nil)
 	req.SetBasicAuth(configuration.Username, configuration.Password)
 	resp, err := client.Do(req)
 	if err != nil {

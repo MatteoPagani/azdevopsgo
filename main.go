@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -49,6 +50,12 @@ func commands() {
 			Usage:   "Get builds of current project definition",
 			Action: func(c *cli.Context) {
 				readConfigurationFile() // Reads the config.json file and store into configuration var
+
+				if configuration.Project == "" {
+					fmt.Println("You must run setup command first")
+					return
+				}
+
 				getBuildsOfDefinition() // Print in CLI the last N builds of the definition
 			},
 		},
