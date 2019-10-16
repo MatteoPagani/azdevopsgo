@@ -33,11 +33,11 @@ func askForConfigurationAndSave() {
 
 	file, _ := json.MarshalIndent(configuration, "", " ")
 
-	_ = ioutil.WriteFile("config.json", file, 0644)
+	_ = ioutil.WriteFile("devops.config.json", file, 0644)
 }
 
 func readConfigurationFile() {
-	file, _ := ioutil.ReadFile("config.json")
+	file, _ := ioutil.ReadFile("devops.config.json")
 
 	configuration = Configuration{}
 
