@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/jedib0t/go-pretty/table"
@@ -50,11 +52,43 @@ func printBuilds(builds []Build) {
 
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
-	t.AppendHeader(table.Row{"#", "Started", "Finished", "Branch"})
+	t.AppendHeader(table.Row{"#", "Started", "Finished", "Branch", "Changes"})
 
 	i := 0
 	for _, element := range builds {
-		t.AppendRow([]interface{}{element.Id, element.StartTime, element.FinishTime, element.SourceBranch})
+
+		lastChangeMessage := ""
+		changes := getBuildChangesById(fmt.Sprintf("%d", element.Id))
+		if len(changes) > 0 {
+			lastChange := changes[0]
+			lastChangeMessage = lastChange.Message
+		}
+
+		branchName := element.SourceBranch
+		if strings.Contains(element.SourceBranch, "/") {
+			splittedBranchRefs := strings.Split(element.SourceBranch, "/")
+			branchName = splittedBranchRefs[len(splittedBranchRefs)-1]
+		}
+
+		startTime := ""
+		if element.StartTime != "" {
+			parsedStartTime, _ := time.Parse(AzureTimeLayout, element.StartTime)
+			startTime = parsedStartTime.In(desiredLocationForDateTime).Format(DesiredTimeLayout)
+		}
+
+		finishTime := ""
+		if element.FinishTime != "" {
+			parsedFinishTime, _ := time.Parse(AzureTimeLayout, element.FinishTime)
+			finishTime = parsedFinishTime.In(desiredLocationForDateTime).Format(DesiredTimeLayout)
+		}
+
+		t.AppendRow([]interface{}{
+			element.Id,
+			startTime,
+			finishTime,
+			branchName,
+			lastChangeMessage,
+		})
 		i = i + 1
 		if i > 10 {
 			break
